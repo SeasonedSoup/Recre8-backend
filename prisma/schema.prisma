@@ -19,6 +19,11 @@ enum Status {
 
 model User {
   id Int @id @default(autoincrement())
+  password String
+  email String @unique 
+  username String @unique
+  aboutMe String?
+  joinedAt DateTime @default(now())
   posts Post[]
   comments Comment[]
   likes Like[]
@@ -31,12 +36,25 @@ model User {
 
 model Post {
   id Int @id @default(autoincrement())
+  title String 
+  content String 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int
 
+  postImages PostImage[]
   comments Comment[]
   likes Like[]
   @@map("posts")
+}
+
+model PostImage {
+  id Int @id @default(autoincrement())
+  url String 
+  
+  postId Int 
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("post_images")
 }
 //might add upvote for comments
 model Comment {
