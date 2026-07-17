@@ -1,0 +1,3 @@
+addFriend = async(req, res) => {
+
+}
