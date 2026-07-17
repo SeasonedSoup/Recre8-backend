@@ -11,3 +11,68 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum Status {
+  PENDING
+  FRIENDS
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  posts Post[]
+  comments Comment[]
+  likes Like[]
+
+  sentFriendRequest Friend[] @relation("Sender")
+  receivedFriendRequest Friend[] @relation("Receiver")
+  @@map("users")
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int
+
+  comments Comment[]
+  likes Like[]
+  @@map("posts")
+}
+//might add upvote for comments
+model Comment {
+  id Int @id @default(autoincrement())
+  text String
+
+  commenterId Int
+  commenter User @relation(fields: [commenterId], references: [id], onDelete: Cascade)
+
+  postId Int 
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Like {
+  userId Int
+  postId Int 
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, postId])
+  @@map("likes")
+}
+
+model Friend {
+  userId Int
+  friendId Int
+
+  createdAt DateTime @default(now())
+  status Status @default(PENDING)
+
+  sender User @relation("Sender", fields: [userId], references: [id], onDelete: Cascade)
+  receiver User @relation("Receiver", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@id([userId, friendId])
+  @@map("friends")
+}
+
