@@ -22,6 +22,7 @@ model User {
   posts Post[]
   comments Comment[]
   likes Like[]
+  upvotes Upvote[]
 
   sentFriendRequest Friend[] @relation("Sender")
   receivedFriendRequest Friend[] @relation("Receiver")
@@ -41,6 +42,7 @@ model Post {
 model Comment {
   id Int @id @default(autoincrement())
   text String
+  upvotes Upvote[]
 
   commenterId Int
   commenter User @relation(fields: [commenterId], references: [id], onDelete: Cascade)
@@ -49,6 +51,16 @@ model Comment {
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@map("comments")
+}
+
+model Upvote {
+  commentId Int 
+  comment Comment @relation(fields: [commentId], references: [id])
+  userId Int 
+  upvoter User @relation(fields: [userId], references: [id])
+
+  @@id([userId, commentId])
+  @@map("upvotes")
 }
 
 model Like {
