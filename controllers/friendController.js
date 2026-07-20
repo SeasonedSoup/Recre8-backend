@@ -1,6 +1,9 @@
 const { prisma } = require("../lib/prisma")
 
 addFriend = async(req, res) => {
+    if (req.user.userId === req.body.friendId) {
+        return res.status(400).json({error: "You cannot add yourself"})
+    }
     const result = await prisma.friend.create({
         data: {
             userId: req.user.userId,
@@ -54,7 +57,7 @@ deleteFriend = async(req, res) => {
 
     const result = await prisma.friend.delete({
         where : {
-            id : existingRequest.id
+            id : friendship.id
         }
     })
 
@@ -85,5 +88,4 @@ module.exports = {
     addFriend,
     acceptFriend,
     deleteFriend
-
 }
