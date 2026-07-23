@@ -22,6 +22,17 @@ const signUp = async(req, res) => {
     return res.status(201).json({message: "User successfully created", result: userWithoutPass})
 } 
 
+const getUser = async(req, res) => {
+    const result = await prisma.user.findUnique({
+        where: {
+            id: req.user.userId
+        }
+    })
+
+    return res.status(200).json({user: result});
+}
+
 module.exports = {
-    signUp
+    signUp,
+    getUser
 }
