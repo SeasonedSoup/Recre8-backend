@@ -19,15 +19,19 @@ enum Status {
 
 model User {
   id Int @id @default(autoincrement())
-  password String
+  password String?
   email String @unique 
   username String @unique
   aboutMe String?
+  avatar String?
   joinedAt DateTime @default(now())
   posts Post[]
   comments Comment[]
   likes Like[]
   upvotes Upvote[]
+
+  githubId String? @unique
+  googleId String? @unique
 
   sentFriendRequest Friend[] @relation("Sender")
   receivedFriendRequest Friend[] @relation("Receiver")
