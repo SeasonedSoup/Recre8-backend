@@ -7,13 +7,17 @@ const userRouter = Router();
 
 //for login prob
 userRouter.get('/get-user', tokenController.verifyToken, userController.getUser);
+
+// PASSPORT STRATEGIES
 //local
 userRouter.post('/login', passport.authenticate('local', {session: false,}), tokenController.signAndGiveToken);
 userRouter.post('/sign-up', userController.signUp);
 
 //github
-userRouter.post('/github', passport.authenticate('github'), {session: false}, tokenController.signAndGiveToken);
-
+userRouter.get('/github', passport.authenticate('github', {session: false, scope:["user:email"]}));
+userRouter.get('/github/callback', passport.authenticate('github', {session: false}), tokenController.signAndGiveToken);
 //google 
-userRouter.post('/google', passport.authenticate('google', {session: false}), tokenController.signAndGiveToken);
+userRouter.get('/google', passport.authenticate('google', {session: false, scope:['user', 'email']}));
+userRouter.get('/google/callback', passport.authenticate('google', {session: false}), tokenController.signAndGiveToken);
+
 module.exports = userRouter;
