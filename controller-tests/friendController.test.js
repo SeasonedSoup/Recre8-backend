@@ -12,6 +12,9 @@ app.use('/', friendRouter);
         .post('/add')
 })*/
 
+//test("Delete Friend Works", done => {})
+
+    
 test("placeholder test for friends", () => {
     expect(true).toBe(true);
 });
