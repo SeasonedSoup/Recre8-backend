@@ -81,9 +81,16 @@ app.get('/', (req, res) => {
     res.send("HI IM RECRE-8 API");
 })
 
+
+//Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack); 
-  res.status(500).json({ error: "Internal server error." });
+    console.error(err.stack); 
+
+    if (err.code?.startsWith('P')) {
+    return res.status(400).json({ error: "Database operation failed" });
+    }
+
+    res.status(500).json({ error: "Internal server error." });
 });
 
 const PORT = process.env.PORT || 8080;

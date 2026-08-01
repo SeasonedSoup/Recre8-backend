@@ -5,6 +5,7 @@ const request = require('supertest');
 const express = require('express');
 
 const app = express();
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/', userRouter);
@@ -18,6 +19,7 @@ beforeEach(async() => {
 afterAll(async() => {
     await prisma.$disconnect();
 })
+
 test("User is able to sign up", done => {
     request(app)
         .post('/sign-up')

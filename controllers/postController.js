@@ -47,7 +47,15 @@ const deletePost = async(req, res) => {
     res.sendStatus(204);
 }
 
+//testing
+const getPosts = async(req, res) => {
+    const posts = await prisma.post.findMany({take: 10})
+
+    res.json(posts)
+}
+
 module.exports = {
     createPost,
-    deletePost
+    deletePost,
+    getPosts
 }
