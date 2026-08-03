@@ -87,5 +87,6 @@ getFriends = async(req, res) => {
 module.exports = {
     addFriend,
     acceptFriend,
-    deleteFriend
+    deleteFriend,
+    getFriends
 }
