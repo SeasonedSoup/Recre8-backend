@@ -20,7 +20,7 @@ afterAll(async() => {
     await prisma.$disconnect();
 })
 
-test("User is able to sign up", done => {
+test("Users are able to sign up", done => {
     request(app)
         .post('/sign-up')
         .send({
@@ -33,6 +33,21 @@ test("User is able to sign up", done => {
             if (err) return done(err);
             expect(res.body.message).toBe("User successfully created")
 
-            done();
+            request(app)
+            .post('/sign-up')
+            .send({
+                username: 'Alice',
+                password: 'creategal2',
+                email: 'alice@gmail.com'
+            })
+            .expect(201)
+            .end((err, res) => {
+                if (err) return done (err);
+                expect(res.body.message).toBe("User successfully created")
+
+                done();
+            })
         })
+
+    
 });

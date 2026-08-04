@@ -1,4 +1,3 @@
-require('dotenv').config()
 const {prisma} = require('../lib/prisma')
 
 const friendRouter = require('../routes/friendRoute');
@@ -17,6 +16,24 @@ beforeEach(async() => {
     await prisma.$transaction([
         prisma.friend.deleteMany()
     ]);
+
+    await prisma.user.createMany({
+        data: [
+            {
+                id: 1, 
+                email: 'test1@test.com', 
+                username: 'testuser1',
+                password: 'hashed1' 
+            },
+            {
+                id: 2, 
+                email: 'test2@test.com', 
+                username: 'testuser2',
+                password: 'hashed2' 
+            }
+        ],
+        skipDuplicates: true
+    })
 })
 
 afterAll(async() => {
@@ -25,8 +42,8 @@ afterAll(async() => {
 
 test("Add friend working", done => {
     const testToken = jwt.sign(
-        { id: 1, email: "test@example.com" }, 
-        process.env.JWT_SECRET || 'your_test_secret', 
+        { userId: 1}, 
+        process.env.JWT_SECRET, 
         { expiresIn: '1h' }
     )
 
@@ -34,13 +51,10 @@ test("Add friend working", done => {
     post('/add').
     set("Authorization", `Bearer ${testToken}`).
     send({
-        userId : 1,
         friendId : 2
     })
-    .end((err, res) => {
-         if (res.status === 500) {
-                console.log("SERVER ERROR BODY:", res.body); // <-- This prints your backend error
-            }
+    .expect(200)
+    .end((err, res) => { 
         if (err) return done (err)
         done()
     })

@@ -1,6 +1,11 @@
 const { prisma } = require("../lib/prisma")
 
 addFriend = async(req, res) => {
+    
+    if (!req.user) {
+        return res.status(401).json({error: "You are not verified"});
+    }
+
     if (req.user.userId === req.body.friendId) {
         return res.status(400).json({error: "You cannot add yourself"})
     }
