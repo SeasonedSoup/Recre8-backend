@@ -12,28 +12,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/', friendRouter);
 
-beforeEach(async() => {
+//test token for verification token controller
+const testToken = jwt.sign(
+        { userId: 1}, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1h' }
+)
+
+
+beforeAll(async() => {
     await prisma.$transaction([
         prisma.friend.deleteMany()
     ]);
 
-    await prisma.user.createMany({
-        data: [
-            {
-                id: 1, 
-                email: 'test1@test.com', 
-                username: 'testuser1',
-                password: 'hashed1' 
-            },
-            {
-                id: 2, 
-                email: 'test2@test.com', 
-                username: 'testuser2',
-                password: 'hashed2' 
-            }
-        ],
-        skipDuplicates: true
-    })
+    await prisma.user.upsert({
+        where: { id: 1 },
+        update: {},
+        create: { id: 1, email: 'test1@test.com', username: 'testuser1', password: 'hashed1' }
+    });
+
+    await prisma.user.upsert({
+        where: { id: 2 },
+        update: {},
+        create: { id: 2, email: 'test2@test.com', username: 'testuser2', password: 'hashed2' }
+    });
 })
 
 afterAll(async() => {
@@ -41,12 +43,6 @@ afterAll(async() => {
 })
 
 test("Add friend working", done => {
-    const testToken = jwt.sign(
-        { userId: 1}, 
-        process.env.JWT_SECRET, 
-        { expiresIn: '1h' }
-    )
-
     request(app).
     post('/add').
     set("Authorization", `Bearer ${testToken}`).
@@ -59,3 +55,22 @@ test("Add friend working", done => {
         done()
     })
 });
+
+ test("Accept friend working", done => {
+    const aliceToken = jwt.sign(
+        { userId: 2}, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1h' }
+    )
+    request(app)
+    .patch('/accept')
+    .set("Authorization", `Bearer ${aliceToken}`)
+    .send({
+        friendId: 1
+    })
+    .expect(200)
+    .end((err, res) => { 
+        if (err) return done (err)
+        done()
+    })
+})

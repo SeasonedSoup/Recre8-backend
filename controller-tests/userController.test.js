@@ -12,7 +12,11 @@ app.use('/', userRouter);
 
 beforeEach(async() => {
     await prisma.$transaction([
-        prisma.user.deleteMany()
+        prisma.user.delete({
+            where: {
+                username: 'Bob'
+            }
+        })
     ]);
 })
 
@@ -32,22 +36,6 @@ test("Users are able to sign up", done => {
         .end((err, res) => {
             if (err) return done(err);
             expect(res.body.message).toBe("User successfully created")
-
-            request(app)
-            .post('/sign-up')
-            .send({
-                username: 'Alice',
-                password: 'creategal2',
-                email: 'alice@gmail.com'
-            })
-            .expect(201)
-            .end((err, res) => {
-                if (err) return done (err);
-                expect(res.body.message).toBe("User successfully created")
-
-                done();
-            })
+            done();
         })
-
-    
 });

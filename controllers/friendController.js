@@ -1,7 +1,7 @@
 const { prisma } = require("../lib/prisma")
 
 addFriend = async(req, res) => {
-    
+
     if (!req.user) {
         return res.status(401).json({error: "You are not verified"});
     }
@@ -19,13 +19,14 @@ addFriend = async(req, res) => {
 }
 
 acceptFriend = async(req, res) => {
+    try {
+
+    
     const existingRequest = await prisma.friend.findFirst({
         where: {
             status: "PENDING", 
-            OR: [
-                {userId: req.user.userId, friendId: req.body.friendId},
-                {userId: req.body.friendId, friendId: req.user.userId}
-            ]
+            userId: req.body.friendId,
+            friendId: req.user.userId
         }
     })
 
@@ -38,11 +39,14 @@ acceptFriend = async(req, res) => {
             id : existingRequest.id
         },
         data: {
-            status: "ACCEPTED"
+            status: "FRIENDS"
         }
     })
 
     res.status(200).json(result)
+    } catch (err) {
+        console.error(err);
+    } 
 }
 
 deleteFriend = async(req, res) => {
