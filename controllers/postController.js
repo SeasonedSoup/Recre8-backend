@@ -47,7 +47,7 @@ const deletePost = async(req, res) => {
     res.sendStatus(204);
 }
 
-//testing
+//testing takes 10 posts
 const getPosts = async(req, res) => {
     const posts = await prisma.post.findMany({take: 10})
 

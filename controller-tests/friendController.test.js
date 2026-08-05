@@ -74,3 +74,23 @@ test("Add friend working", done => {
         done()
     })
 })
+//delete is for either denying a friendship or deleting it
+test ("Delete friendship working for user1", done => {
+    const bobToken = jwt.sign(
+        { userId: 1}, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1h' }
+    );
+
+    request(app)
+    .delete('/deleteFriend')
+    .set("Authorization", `Bearer ${bobToken}`)
+    .send({
+        friendId: 2
+    })
+    .expect(200)
+    .end((err, res) => {
+        if (err) return done(err)
+        done()
+    }) 
+})
