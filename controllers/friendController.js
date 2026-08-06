@@ -74,12 +74,13 @@ deleteFriend = async(req, res) => {
 }
 
 getFriends = async(req, res) => {
+    try {
     const friendships = await prisma.friend.findMany({
         where: {
-            status: "ACCEPTED",
+            status: "FRIENDS",
             OR: [
-                {userId: req.user.userId, friendId: req.body.friendId},
-                {userId: req.body.friendId, friendId: req.user.userId}
+                {userId: req.user.userId},
+                {friendId: req.user.userId}
                 ]
         },
         include: {
@@ -87,10 +88,17 @@ getFriends = async(req, res) => {
             receiver: true
         }
     })
+    //no need to map if no friends
+    if (friendships.length == 0) {
+        return res.status(200)
+    }
 
     const friendList = friendships.map((friend) => friend.userId === req.user.userId ? friend.receiver : friend.sender)
     
     return res.status(200).json(friendList);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 module.exports = {

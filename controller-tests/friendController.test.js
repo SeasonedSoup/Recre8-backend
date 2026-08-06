@@ -56,7 +56,7 @@ test("Add friend working", done => {
     })
 });
 
- test("Accept friend working", done => {
+test("Accept friend working", done => {
     const aliceToken = jwt.sign(
         { userId: 2}, 
         process.env.JWT_SECRET, 
@@ -74,17 +74,31 @@ test("Add friend working", done => {
         done()
     })
 })
+
+test("Bob is now friends with alice and should return an array of only 1 friend", done => {
+    request(app).
+    get("/friends")
+    .set("Authorization", `Bearer ${testToken}`)
+    .expect(200)
+    .end((err, res) => {
+        if (err) return done(err);
+        
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body).toEqual(
+            expect.arrayContaining([
+            expect.objectContaining({username: 'testuser2'})
+            ])
+        )
+            done();       
+    })
+})
+
 //delete is for either denying a friendship or deleting it
 test ("Delete friendship working for user1", done => {
-    const bobToken = jwt.sign(
-        { userId: 1}, 
-        process.env.JWT_SECRET, 
-        { expiresIn: '1h' }
-    );
 
     request(app)
     .delete('/deleteFriend')
-    .set("Authorization", `Bearer ${bobToken}`)
+    .set("Authorization", `Bearer ${testToken}`)
     .send({
         friendId: 2
     })
