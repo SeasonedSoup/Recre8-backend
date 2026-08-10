@@ -54,15 +54,19 @@ const deleteCommentById = async(req, res) => {
 }
 
 const getCommentsOnPost = async(req, res) => {
-    const postId = Number(req.params.postId) 
+    try {
 
-    if (Number.isNaN(postId) || postId.trim() === "") {
+    
+    const postId = req.params.postId
+    const sanitizedId = Number(postId)
+
+    if (Number.isNaN(sanitizedId) || postId.trim() === "") {
         return res.status(400).json({error: "Not a valid id"})
     }
 
     const post = await prisma.post.findUnique({
         where : {
-            id: postId
+            id: sanitizedId
         }
     })
 
@@ -72,11 +76,15 @@ const getCommentsOnPost = async(req, res) => {
 
     const result = await prisma.comment.findMany({
         where: {
-            postId: postId
+            postId: sanitizedId
         }
     })
     
     res.json(result);
+}
+    catch (err) {
+        console.error(err)
+    }
 }
 
 module.exports = {

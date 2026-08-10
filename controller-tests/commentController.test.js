@@ -31,6 +31,12 @@ beforeAll(async() => {
         create: { id: 2, title: "Comment Post", content: 'this post is a test for commenting', authorId: 4},
         update: {}
     });
+
+    await prisma.comment.upsert({
+        where: {id : 1},
+        create: {id: 1, text: "This comment will be deleted", commenterId: 4, postId: 2},
+        update: {}
+    })
 })
 
 afterAll(async() => {
@@ -55,5 +61,24 @@ test("Create comment on post successfully", done => {
 
         done();
     })
+})
+
+test("delete comment successfully", done => {
+    const commentId = 1;
+
+    request(app)
+    .delete(`/${commentId}/delete-comment`)
+    .set("Authorization", `Bearer ${commentToken}`)
+    .expect(204)
+    .end(done)
+})
+
+test("Fetches comments on a specific post", done => {
+    const postId = 2;
+    
+    request(app)
+    .get(`/${postId}/comments`)
+    .expect(200)
+    .end(done)
 })
 
