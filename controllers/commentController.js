@@ -1,11 +1,14 @@
 const {prisma} = require('../lib/prisma');
 
 const commentOnPost = async(req, res) => {
-    const postId = req.params.postId
+    try {
+
+    
+    const postId = req.body.postId
     const text = req.body.comment
     const commenterId = req.user.userId
     
-    const result = await prisma.friend.create({
+    const result = await prisma.comment.create({
         data: {
             postId,
             commenterId,
@@ -14,10 +17,13 @@ const commentOnPost = async(req, res) => {
     })
 
     res.status(201).json({message: "Comment successfully submitted on post", comment: result});
+} catch(err) {
+    console.error(err)
+}
 }
 
 const deleteCommentById = async(req, res) => {
-    const id = Number(req.body.commentId);
+    const id = Number(req.params.commentId);
     const commenterId = req.user.userId;
     
     if (!id || !commenterId) {

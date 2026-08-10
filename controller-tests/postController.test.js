@@ -64,7 +64,7 @@ test('Deleting post works well', done => {
     .expect(204)
     .end(done)
 })
-
+//only one post for now
 test("Fetches the first ten posts found", done => {
     request(app)
     .get('/posts')
