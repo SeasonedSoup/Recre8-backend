@@ -27,6 +27,11 @@ beforeAll(async() => {
         update: {}
     });
 
+    await prisma.post.upsert({
+        where: {id: 1},
+        create: { id: 1, title: "Test Post", content: 'this post is a test', authorId: 3},
+        update: {}
+    });
 })
 
 afterAll(async() => {
@@ -46,6 +51,30 @@ test('Creating post works properly', done => {
         if (err) return done(err);
         
         expect(res.body.message).toBe("Post created successfully");
+        done();
+    })
+})
+
+test('Deleting post works well', done => {
+    const postId = 1
+
+    request(app)
+    .delete(`/delete/${postId}`)
+    .set('Authorization', `Bearer ${postToken}`)
+    .expect(204)
+    .end(done)
+})
+
+test("Fetches the first ten posts found", done => {
+    request(app)
+    .get('/posts')
+    .expect(200)
+    .end((err, res) => {
+        if (err) return done(err);
+
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body).toHaveLength(1);
+
         done();
     })
 })

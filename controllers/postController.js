@@ -18,7 +18,7 @@ const createPost = async(req, res) => {
 }
 
 const deletePost = async(req, res) => {
-    const {id} = req.body
+    const id = req.params.postId
     
     if (!id) {
         return res.status(400).json({error: "post id is needed to delete"});
@@ -49,7 +49,14 @@ const deletePost = async(req, res) => {
 
 //testing takes 10 posts
 const getPosts = async(req, res) => {
-    const posts = await prisma.post.findMany({take: 10})
+    const posts = await prisma.post.findMany({
+        take: 10,
+        include: {
+            likes: true,
+            postImages: true,
+            comments: true
+        }
+    })
 
     res.json(posts)
 }
