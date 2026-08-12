@@ -34,7 +34,7 @@ toggleLike = async(req, res) => {
 
 
 toggleUpvote = async(req, res) => {
-    const userId = Number(req.user.userId)
+    const userId = req.user.userId
     const commentId = Number(req.body.commentId)
 
     const upvote = await prisma.upvote.findUnique({
