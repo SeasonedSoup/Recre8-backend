@@ -30,6 +30,8 @@ toggleLike = async(req, res) => {
             }
         })
     }
+
+    res.send(200).json({message: "Toggled successfully"})
 }
 
 
@@ -63,6 +65,8 @@ toggleUpvote = async(req, res) => {
             }
         })
     }
+
+    res.send(200).json({message: "Toggled successfully"})
 }
 
 

@@ -1,5 +1,4 @@
 const {prisma} = require('../lib/prisma')
-
 //no images yet
 const createPost = async(req, res) => {
     const title = req.body.title;
@@ -10,9 +9,24 @@ const createPost = async(req, res) => {
         data : {
             title,
             content,
-            authorId
+            authorId,
         }
     });
+
+    if (!result) {
+        return res.status(400).json({error: "Error Creating Post"});
+    }
+
+    const imageUrls = req.supabaseUrls.map((imageUrl) => ({
+        imageUrl: imageUrl,
+        postId: result.id
+    }));
+
+    await prisma.postImage.createMany({
+        data: {
+            imageUrls
+        }
+    })
 
     res.status(201).json({message: "Post created successfully", post: result});
 }

@@ -1,4 +1,3 @@
-const {prisma} = require('../lib/prisma');
 const {supabase} = require('../lib/supabase');
 
 const {body, validationResult, matchedData} = require("express-validator");
@@ -11,10 +10,6 @@ const MAX_FILE_SIZE = 1024 * 1024 * 50
 const validateFiles = [
     body("files")
     .custom((_, {req}) => {
-        if (!req.files || req.files.length == 0) {
-            throw new Error("No Files Found");
-        }
-
         for (const file of req.files) {
              if (file.size > MAX_FILE_SIZE) {
                 throw new Error("A File Exceeds the 50MB limit");
@@ -31,6 +26,12 @@ const uploadImage = [upload.array('photos', 3), validateFiles, async(req, res, n
     if (!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()})
     }
+
+        //post with no image
+    if (!req.files || req.files.length === 0) {
+        req.supabaseUrls = [];
+        return next();
+    }
     
     //Main Logic
     const urlLinks = [];
@@ -45,7 +46,7 @@ const uploadImage = [upload.array('photos', 3), validateFiles, async(req, res, n
         if (error) return res.status(500).json({error: "Error uploading a file"});
 
         
-        const {data: urlData} = await supabase.from("Post_Images").getPublicUrl(fileName);
+        const {data: urlData} = await supabase.storage.from("Post_Images").getPublicUrl(fileName);
 
         urlLinks.push(urlData.publicUrl);
 
