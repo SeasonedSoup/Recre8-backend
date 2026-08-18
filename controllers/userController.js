@@ -29,7 +29,7 @@ const getUser = async(req, res) => {
         }
     })
 
-    return res.status(200).json({user: result});
+    return res.status(200).json(result);
 }
 
 module.exports = {

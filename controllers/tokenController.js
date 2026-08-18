@@ -11,7 +11,8 @@ async function signAndGiveToken(req, res) {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'prod',
         sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/'
     })
 
     //oauth
@@ -20,7 +21,7 @@ async function signAndGiveToken(req, res) {
     }
 
     //local
-    res.json({token, user});
+    res.json({user});
 }
 
 async function verifyToken(req, res, next) {
@@ -38,6 +39,17 @@ async function verifyToken(req, res, next) {
     } catch (err) {
         res.status(403).json({message: "Invalid or Expired Token"});
     }
+}
+
+async function removeToken(req, res) {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'prod',
+        sameSite: 'lax',
+        path: '/'
+    });
+
+
 }
 /* old via headers
 async function verifyToken(req, res, next) {
