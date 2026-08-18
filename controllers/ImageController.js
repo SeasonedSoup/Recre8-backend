@@ -38,7 +38,7 @@ const uploadImage = [upload.array('photos', 3), validateFiles, async(req, res, n
 
     for (const file of req.files) {
         const fileName = `${file.originalname.replace(/\s+/g, '-')}_${Date.now()}`;
-        const {_, error} = await supabase.from("Post_Images").upload(fileName, file.buffer, {
+        const {_, error} = await supabase.storage.from("Post_Images").upload(fileName, file.buffer, {
             contentType: file.mimetype,
             upsert: true
         });

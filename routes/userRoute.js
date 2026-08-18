@@ -17,7 +17,7 @@ userRouter.post('/sign-up', userController.signUp);
 userRouter.get('/github', passport.authenticate('github', {session: false, scope:["user:email"]}));
 userRouter.get('/github/callback', passport.authenticate('github', {session: false}), tokenController.signAndGiveToken);
 //google 
-userRouter.get('/google', passport.authenticate('google', {session: false, scope:['user', 'email']}));
+userRouter.get('/google', passport.authenticate('google', {session: false, scope:['profile', 'email']}));
 userRouter.get('/google/callback', passport.authenticate('google', {session: false}), tokenController.signAndGiveToken);
 
 module.exports = userRouter;

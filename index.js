@@ -10,6 +10,11 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const {prisma} = require('./lib/prisma');
 const bcryptjs = require('bcryptjs');
+const cookieParser = require('cookie-parser')
+
+//ROUTERS 
+const userRouter = require('./routes/userRoute');
+
 
 // Local strategy
 passport.use(
@@ -25,7 +30,7 @@ passport.use(
                 return done(null, false, {message: "Username does not exist"});
             }
 
-            const match = await bcryptjs.compare(passport, user.password);
+            const match = await bcryptjs.compare(password, user.password);
 
             if (!match) {
                 return done(null, false, {message: "Incorrect password"})
@@ -41,7 +46,7 @@ passport.use(
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:8000/auth/github/callback"
+    callbackURL: "http://localhost:8080/auth/github/callback",
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -55,9 +60,9 @@ passport.use(new GitHubStrategy({
 
 //Google Strategy 
 passport.use(new GoogleStrategy({
-    clientID: procces.env.GOOGLE_CLIENT_ID,
-    clientSecret: proccess.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://www.example.com/auth/google/callback"
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:8080/auth/google/callback",
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -72,14 +77,21 @@ passport.use(new GoogleStrategy({
 app.use(passport.initialize());
 
 const cors = require('cors');
-app.use(cors()); 
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+})); 
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
-app.use
 app.get('/', (req, res) => {
     res.send("HI IM RECRE-8 API");
 })
+
+app.use('/auth', userRouter)
 
 
 //Global error handler
@@ -93,7 +105,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: "Internal server error." });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, (err) => {
     if (err) {
         throw err;

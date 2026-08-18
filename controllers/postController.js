@@ -23,9 +23,7 @@ const createPost = async(req, res) => {
     }));
 
     await prisma.postImage.createMany({
-        data: {
-            imageUrls
-        }
+        data: imageUrls
     })
 
     res.status(201).json({message: "Post created successfully", post: result});
