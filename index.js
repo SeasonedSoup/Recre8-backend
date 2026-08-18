@@ -50,7 +50,8 @@ passport.use(new GitHubStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-        const user = await Auth.GithubAuth(profile);
+          console.log('🔑 Got access token?', !!accessToken);
+        const user = await Auth.GithubAuth(profile, accessToken);
         return done(null, user);
     } catch (err) {
         return done(err);
