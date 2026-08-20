@@ -13,6 +13,8 @@ userRouter.get('/get-user', tokenController.verifyToken, userController.getUser)
 userRouter.post('/login', passport.authenticate('local', {session: false,}), tokenController.signAndGiveToken);
 userRouter.post('/sign-up', userController.signUp);
 
+userRouter.post('/logout', tokenController.removeToken);
+
 //github
 userRouter.get('/github', passport.authenticate('github', {session: false, scope:["user:email"]}));
 userRouter.get('/github/callback', passport.authenticate('github', {session: false}), tokenController.signAndGiveToken);

@@ -49,7 +49,7 @@ async function removeToken(req, res) {
         path: '/'
     });
 
-
+    res.json({message: "Logged Out Successfully"})
 }
 /* old via headers
 async function verifyToken(req, res, next) {
@@ -72,5 +72,6 @@ async function verifyToken(req, res, next) {
 
 module.exports = {
     signAndGiveToken,
-    verifyToken
+    verifyToken,
+    removeToken
 }
