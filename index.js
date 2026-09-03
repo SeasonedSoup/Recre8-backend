@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser')
 
 //ROUTERS 
 const userRouter = require('./routes/userRoute');
-
+const postRouter = require('./routes/postRoute');
 
 // Local strategy
 passport.use(
@@ -92,7 +92,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/auth', userRouter)
-
+app.use('/', postRouter);
 
 //Global error handler
 app.use((err, req, res, next) => {
