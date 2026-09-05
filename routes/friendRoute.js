@@ -6,6 +6,6 @@ const friendRouter = Router();
 
 friendRouter.post('/add', tokenController.verifyToken, friendController.addFriend);
 friendRouter.patch('/accept', tokenController.verifyToken, friendController.acceptFriend);
-friendRouter.delete('/deleteFriend', tokenController.verifyToken, friendController.deleteFriend);
+friendRouter.delete('/delete/:friendId', tokenController.verifyToken, friendController.deleteFriend);
 friendRouter.get('/friends', tokenController.verifyToken, friendController.getFriends);
 module.exports = friendRouter;

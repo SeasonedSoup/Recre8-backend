@@ -15,6 +15,7 @@ const cookieParser = require('cookie-parser')
 //ROUTERS 
 const userRouter = require('./routes/userRoute');
 const postRouter = require('./routes/postRoute');
+const friendRouter = require('./routes/friendRoute');
 
 // Local strategy
 passport.use(
@@ -91,7 +92,8 @@ app.get('/', (req, res) => {
     res.send("HI IM RECRE-8 API");
 })
 
-app.use('/auth', userRouter)
+app.use('/auth', userRouter);
+app.use('/friend', friendRouter);
 app.use('/', postRouter);
 
 //Global error handler

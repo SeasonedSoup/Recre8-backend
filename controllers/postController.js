@@ -66,7 +66,8 @@ const getPosts = async(req, res) => {
         include: {
             likes: true,
             postImages: true,
-            comments: true
+            comments: true,
+            author: true
         }
     })
 

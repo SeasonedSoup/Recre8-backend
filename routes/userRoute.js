@@ -8,6 +8,9 @@ const userRouter = Router();
 //for login prob
 userRouter.get('/get-user', tokenController.verifyToken, userController.getUser);
 
+//users
+userRouter.get('/users', tokenController.verifyToken, userController.getAllUsers);
+
 // PASSPORT STRATEGIES
 //local
 userRouter.post('/login', passport.authenticate('local', {session: false,}), tokenController.signAndGiveToken);

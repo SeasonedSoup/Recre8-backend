@@ -53,8 +53,8 @@ deleteFriend = async(req, res) => {
     const friendship = await prisma.friend.findFirst({
         where: {
             OR: [
-                {userId: req.user.userId, friendId: req.body.friendId},
-                {userId: req.body.friendId, friendId: req.user.userId}
+                {userId: req.user.userId, friendId: req.params.friendId},
+                {userId: req.params.friendId, friendId: req.user.userId}
                 ]
             }
         }

@@ -32,7 +32,25 @@ const getUser = async(req, res) => {
     return res.status(200).json(result);
 }
 
+const getAllUsers = async(req, res) => {
+    const result = await prisma.user.findMany({
+        where: {
+            id: {
+                not: req.user.id
+            }
+        },
+        include: {
+            sentFriendRequest: true,
+            receivedFriendRequest: true
+        }
+
+    });
+
+    return res.status(200).json(result);
+}
+
 module.exports = {
     signUp,
-    getUser
+    getUser,
+    getAllUsers
 }
