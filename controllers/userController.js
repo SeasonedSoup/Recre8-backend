@@ -36,14 +36,13 @@ const getAllUsers = async(req, res) => {
     const result = await prisma.user.findMany({
         where: {
             id: {
-                not: req.user.id
+                not: req.user.userId
             }
         },
         include: {
             sentFriendRequest: true,
             receivedFriendRequest: true
         }
-
     });
 
     return res.status(200).json(result);
