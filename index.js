@@ -16,6 +16,8 @@ const cookieParser = require('cookie-parser')
 const userRouter = require('./routes/userRoute');
 const postRouter = require('./routes/postRoute');
 const friendRouter = require('./routes/friendRoute');
+const upvoteLikeRouter = require("./routes/upvote&likeRoute");
+const commentRouter = require("./routes/commentRoute");
 
 // Local strategy
 passport.use(
@@ -95,6 +97,8 @@ app.get('/', (req, res) => {
 app.use('/auth', userRouter);
 app.use('/friend', friendRouter);
 app.use('/', postRouter);
+app.use('/', commentRouter);
+app.use('/', upvoteLikeRouter);
 
 //Global error handler
 app.use((err, req, res, next) => {
