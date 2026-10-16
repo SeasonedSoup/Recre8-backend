@@ -70,10 +70,15 @@ const getPosts = async (req, res) => {
           commenter: {
             select: {
               username: true,
-              avatar: true
+              avatar: true,
+            }
+          },
+          _count: {
+            select: {
+              upvotes: true
             }
           }
-        }
+        },
       },
       _count: {
         select: {
