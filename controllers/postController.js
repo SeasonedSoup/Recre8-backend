@@ -1,4 +1,6 @@
 const { prisma } = require('../lib/prisma')
+const { getImageUrl } = require('./ImageController.js');
+
 //no images yet
 const createPost = async (req, res) => {
   const title = req.body.title;
@@ -88,7 +90,19 @@ const getPosts = async (req, res) => {
     }
   })
 
-  res.json(posts)
+  const postsWithImageUrl = posts.map((post) => {
+    return {
+      ...post,
+      postImages: post.postImages.map((postImage) => {
+        return {
+          ...postImage,
+          url: getImageUrl(postImage.url)
+        }
+      })
+    }
+  })
+
+  res.json(postsWithImageUrl);
 }
 
 module.exports = {

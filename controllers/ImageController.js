@@ -3,8 +3,8 @@ const { supabase } = require('../lib/supabase');
 const multer = require('multer')
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const MAX_FILE_SIZE = 1024 * 1024 * 50
-
+const MAX_FILE_SIZE = 1024 * 1024 * 50;
+const MAX_PROFILE_PICTURE_SIZE = 1024 * 1024 * 16;
 const validateFiles = (req, res, next) => {
   if (!req.files || req.files.length === 0) {
     return next();
@@ -23,7 +23,7 @@ const validateProfilePicture = (req, res, next) => {
     return next();
   }
 
-  if (file.size > MAX_FILE_SIZE) {
+  if (req.file.size > MAX_PROFILE_PICTURE_SIZE) {
     return res.status(400).json({ error: "A File Exceeds the 50MB limit" });
   }
 
@@ -85,8 +85,13 @@ const uploadProfilePic = [upload.single("profilePic"), validateProfilePicture, a
     return res.status(400).json({ error: err.message || "Error uploading" });
   }
 }]
+//helper
+const getImageUrl = (path) => {
+  return supabase.getPublicUrl(path);
+}
 
 module.exports = {
   uploadImage,
-  uploadProfilePic
+  uploadProfilePic,
+  getImageUrl
 }

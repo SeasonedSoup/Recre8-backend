@@ -49,11 +49,33 @@ const getAllUsers = async (req, res) => {
 }
 
 const updateProfile = async (req, res) => {
+  const aboutMe = req.body.aboutMe
+  const url = req.supabaseUrl
 
+  const updatedData = { aboutMe }
+
+  if (url) {
+    updatedData.avatar = url;
+  }
+
+  try {
+    const result = await prisma.user.update({
+      where: {
+        id: req.user.userId
+      },
+      data: updatedData
+    })
+
+    return res.status(200).json(result);
+
+  } catch (err) {
+    return res.status(400).json(err);
+  }
 }
 
 module.exports = {
   signUp,
   getUser,
-  getAllUsers
+  getAllUsers,
+  updateProfile
 }
