@@ -85,13 +85,7 @@ const uploadProfilePic = [upload.single("profilePic"), validateProfilePicture, a
     return res.status(400).json({ error: err.message || "Error uploading" });
   }
 }]
-//helper
-const getImageUrl = (path) => {
-  return supabase.getPublicUrl(path);
-}
-
 module.exports = {
   uploadImage,
   uploadProfilePic,
-  getImageUrl
 }
