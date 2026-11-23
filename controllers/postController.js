@@ -1,4 +1,5 @@
-const { prisma } = require('../lib/prisma')
+const { prisma } = require('../lib/prisma');
+const { supabase } = require('../lib/supabase.js');
 
 //no images yet
 const createPost = async (req, res) => {
@@ -50,7 +51,11 @@ const deletePost = async (req, res) => {
   if (post.authorId != req.user.userId) {
     return res.status(403).json({ error: "You are not the owner of this post" });
   }
-
+  if (post.postImages && post.postImages.length > 0) {
+    const fileUrls = post.postImages.map((postImage) => {
+      postImage.split("/Post_Images/")[1];
+    })
+  }
   await prisma.post.delete({
     where: {
       id: Number(id)
