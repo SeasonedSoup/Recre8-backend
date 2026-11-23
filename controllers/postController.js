@@ -98,8 +98,106 @@ const getPosts = async (req, res) => {
   res.json(posts);
 }
 
+const getUserPosts = async (req, res) => {
+  const userId = Number(req.userId);
+
+  const posts = await prisma.post.findMany({
+    include: {
+      postImages: true,
+      author: true,
+      comments: {
+        include: {
+          commenter: {
+            select: {
+              username: true,
+              avatar: true,
+            }
+          },
+          _count: {
+            select: {
+              upvotes: true
+            }
+          }
+        },
+      },
+      _count: {
+        select: {
+          likes: true
+        }
+      }
+    },
+    where: {
+      authorId: userId
+    }
+  })
+
+  return res.status(200).json(posts);
+}
+
+const getFriendPosts = async (req, res) => {
+  const userId = Number(req.userId);
+
+  const posts = await prisma.post.findMany({
+    include: {
+      postImages: true,
+      author: true,
+      comments: {
+        include: {
+          commenter: {
+            select: {
+              username: true,
+              avatar: true,
+            }
+          },
+          _count: {
+            select: {
+              upvotes: true
+            }
+          }
+        },
+      },
+      _count: {
+        select: {
+          likes: true
+        }
+      }
+    },
+    where: {
+      author: {
+        OR: [
+          {
+            sentFriendRequest: {
+              some: {
+                friendId: userId,
+                status: "FRIENDS"
+              }
+            }
+          },
+          {
+            receivedFriendRequest: {
+              some: {
+                userId: userId,
+                status: "FRIENDS"
+              }
+            }
+          }
+        ]
+      }
+    },
+    orderBy: {
+      id: 'desc'
+    }
+  })
+
+  return res.status(200).json(posts);
+}
+
+
+
 module.exports = {
   createPost,
   deletePost,
-  getPosts
+  getPosts,
+  getUserPosts,
+  getFriendPosts,
 }
