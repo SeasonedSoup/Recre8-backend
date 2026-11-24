@@ -7,7 +7,7 @@ const postRouter = Router();
 
 postRouter.post('/create-post', tokenController.verifyToken, imageController.uploadImage, postController.createPost);
 postRouter.delete('/delete/:postId', tokenController.verifyToken, postController.deletePost);
-postRouter.get('/posts', postController.getPosts);
+postRouter.get('/posts', tokenController.verifyToken, postController.getPosts);
 postRouter.get('/your-posts', tokenController.verifyToken, postController.getUserPosts);
 postRouter.get('/friend-posts', tokenController.verifyToken, postController.getFriendPosts);
 

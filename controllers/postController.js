@@ -99,7 +99,7 @@ const getPosts = async (req, res) => {
 }
 
 const getUserPosts = async (req, res) => {
-  const userId = Number(req.userId);
+  const userId = req.user.userId;
 
   const posts = await prisma.post.findMany({
     include: {
@@ -135,7 +135,7 @@ const getUserPosts = async (req, res) => {
 }
 
 const getFriendPosts = async (req, res) => {
-  const userId = Number(req.userId);
+  const userId = req.user.userId
 
   const posts = await prisma.post.findMany({
     include: {
